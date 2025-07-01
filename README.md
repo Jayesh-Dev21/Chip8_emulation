@@ -1,3 +1,3 @@
 # Emulatimg Chip 8 
 
-The Hello World of Emulation
+The Hello World of Emulation!
