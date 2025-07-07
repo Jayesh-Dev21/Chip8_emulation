@@ -118,6 +118,16 @@ impl EMU{
         return &self.screen;
     }
 
+    pub fn keypress(&mut self, idx: usize, pressed: bool){
+        self.keys[idx] = pressed;
+    }
+
+    pub fn load(&mut self, data: &[u8]){
+        let start: usize = START_ADDR as usize;
+        let end: usize = (START_ADDR as usize) + data.len();
+        self.ram[start..end].copy_from_slice(data);
+    }
+
     pub fn tick(&mut self){
         //fetch
         let op: u16 = self.fetch(); // opcode
