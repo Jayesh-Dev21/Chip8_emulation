@@ -114,6 +114,10 @@ impl EMU{
         self.stack[self.sp as usize] // scope for underflow panic, try later
     }
 
+    pub fn get_dislay(&self) -> &[bool]{
+        return &self.screen;
+    }
+
     pub fn tick(&mut self){
         //fetch
         let op: u16 = self.fetch(); // opcode
