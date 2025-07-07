@@ -1,3 +1,5 @@
+use rand::random;
+
 // constants
 const RAM_SIZE: usize = 4096;
 
@@ -127,37 +129,37 @@ impl EMU{
 
         match(digit1,digit2,digit3,digit4){
 
-            //  Time for OP
+            //  Time for OP \\
 
-            // 0000 - Nop
+            // 0000 - Nop \\
             (0,0,0,0) => return,
 
-            // 00E0 - Clear Screen
+            // 00E0 - Clear Screen \\
             (0,0,0xE,0) => {
                 self.screen = [false; SCREEN_WIDTH*SCREEN_HEIGHT];
             },
 
-            // 00EE - Return from Subroutine
+            // 00EE - Return from Subroutine \\
             (0,0,0xE,0xE) => {
                 let ret_addr: u16 = self.pop();
 
                 self.program_counter = ret_addr;
             },
 
-            // 1NNN - Jump
+            // 1NNN - Jump \\
             (1,_,_,_) => {
                 let nnn: u16 = op & 0xFFF;
                 self.program_counter = nnn;
             },
 
-            // 2NNNN - Call Subroutine
+            // 2NNNN - Call Subroutine \\
             (2,_,_,_) => {
                 let nnn: u16 = op & 0xFFF;
                 self.push(self.program_counter);
                 self.program_counter = nnn;
             },
 
-            // 3XNN - Skip next if VX == NN
+            // 3XNN - Skip next if VX == NN \\
             (3,_,_,_) => {
                 let x: usize = digit2 as usize;
                 let nn: u8 = (op & 0xFF) as u8;
@@ -166,7 +168,7 @@ impl EMU{
                 }
             },
 
-            // 4XNN - Skip next if VX == NN
+            // 4XNN - Skip next if VX == NN \\
             (4,_,_,_) => {
                 let x: usize = digit2 as usize;
                 let nn: u8 = (op & 0xFF) as u8;
@@ -175,7 +177,7 @@ impl EMU{
                 }
             },
 
-            // 5XY0 - Skip next if VX == VY
+            // 5XY0 - Skip next if VX == VY \\
             (5,_,_,0) => {
                 let x: usize = digit2 as usize;
                 let y: usize = digit2 as usize;
@@ -184,14 +186,14 @@ impl EMU{
                 }
             },
 
-            // 6XNN - VX = NN
+            // 6XNN - VX = NN \\
             (6,_,_,_) => {
                 let x: usize = digit2 as usize;
                 let nn: u8 = (op & 0xFF) as u8;
                 self.v_reg[x] = nn;
             },
 
-            // 7XNN - VX += NN
+            // 7XNN - VX += NN \\
             (7,_,_,_) => {
                 let x: usize = digit2 as usize;
                 let nn: u8 = (op & 0xFF) as u8;
@@ -224,6 +226,224 @@ impl EMU{
                 let x: usize = digit2 as usize;
                 let y: usize = digit3 as usize;
                 self.v_reg[x] ^= self.v_reg[y]
+            },
+
+            // 8XY4 - VX += VY \\
+            (8,_,_,4) => {
+                let x: usize = digit2 as usize;
+                let y: usize = digit3 as usize;
+                
+                let (new_vx, carry) = self.v_reg[x].overflowing_add(self.v_reg[y]);
+                let new_vf = if carry{1}else{0}; // returns if overflow while operation is 1/0
+                // uses VF - Flag register
+                self.v_reg[x] = new_vx;
+                self.v_reg[0xF] = new_vf;
+            },
+
+            // 8XY5 - VX -= VY \\
+            (8,_,_,5) => {
+                let x: usize = digit2 as usize;
+                let y: usize = digit3 as usize;
+                
+                let (new_vx, borrow) = self.v_reg[x].overflowing_sub(self.v_reg[y]);
+                let new_vf = if borrow{0}else{1}; // returns if underflow while operation is 0/1
+                // uses VF - Flag register
+                self.v_reg[x] = new_vx;
+                self.v_reg[0xF] = new_vf;
+            },
+
+            // 8XY6 - VX >>= 1 \\
+            (8,_,_,6) => {
+                let x: usize = digit2 as usize;
+                let lsb: u8 = self.v_reg[x] & 1; // least sig bit
+
+                self.v_reg[x] >>= 1;
+                self.v_reg[0xF] = lsb;
+            },
+
+           // 8XY7 - VX = VY - VX \\
+            (8,_,_,7) => {
+                let x: usize = digit2 as usize;
+                let y: usize = digit3 as usize;
+                
+                let (new_vx, borrow) = self.v_reg[y].overflowing_sub(self.v_reg[x]);
+                let new_vf = if borrow{0}else{1}; // returns if underflow while operation is 0/1
+                // uses VF - Flag register
+                self.v_reg[x] = new_vx;
+                self.v_reg[0xF] = new_vf;
+            }, 
+
+            // 8XYE - VX <<= 1 \\
+            (8,_,_,0xE) => {
+                let x: usize = digit2 as usize;
+                let msb: u8 = self.v_reg[x] & 1; // most sig bit
+
+                self.v_reg[x] <<= 1;
+                self.v_reg[0xF] = msb;
+            },
+
+            // 9XY0 - Skip if VX != VY \\
+            (9,_,_,0) => {
+                let x: usize = digit2 as usize;
+                let y: usize = digit3 as usize;
+
+                if self.v_reg[x] != self.v_reg[y]{
+                    self.program_counter += 2;
+                }
+            },
+
+            // ANNN - I = NNN \\
+            (0xA,_,_,_) => {
+                let nnn: u16 = op & 0xFFF;
+                self.i_reg = nnn;
+            },
+
+            // BNNN - Jump to V0 + NNN \\
+            (0xB,_,_,_) => {
+                let nnn: u16 = op & 0xFFF;
+                self.program_counter = (self.v_reg[0] as u16) + nnn;
+            },
+
+            // CXNN - VX = rand() & NN \\
+            (0xC,_,_,_) => {
+                let x: usize = digit2 as usize;
+                let nn: u8 = (op & 0xFF) as u8;
+
+                let rng: u8 = random();
+                self.v_reg[x] = rng & nn;
+            },
+
+            // DXYV - Draw Sprite \\
+            (0xD,_,_,_) => {
+                // at (x,y) co - ords
+                let x_cord: u16 = self.v_reg[digit2 as usize] as u16;
+                let y_cord: u16 = self.v_reg[digit3 as usize] as u16;
+
+                let num_rows: u16 = digit4;
+                
+                let mut flipped: bool = false; // to track flipped pixels
+
+                for y_line in 0..num_rows{
+                    let addr: u16 = self.i_reg + y_line as u16;
+                    let pixels: u8 = self.ram[addr as usize];
+                    
+                    for x_line in 0..8{
+                        if (pixels & (0b1000_0000 >> x_line)) != 0{
+                            let x: usize = (x_cord as usize + x_line) % SCREEN_WIDTH;
+                            let y: usize = (y_cord as usize + y_line as usize) % SCREEN_HEIGHT;
+
+                            let idx = x + SCREEN_WIDTH*y;
+                            flipped |= self.screen[idx];
+                            self.screen[idx] ^= true;
+                        }
+                    }
+                }
+
+                if flipped{
+                    self.v_reg[0xF] = 1;
+                }
+                else{
+                    self.v_reg[0xF] = 0;
+                }
+            },
+
+            // EX9E - Skip if Key Pressed \\
+            (0xE,_,9,0xE) => {
+                let x: usize = digit2 as usize;
+                let vx = self.v_reg[x];
+                let key = self.keys[vx as usize];
+                if key{
+                    self.program_counter += 2;
+                }
+            },
+
+            // EXA1 - Skip if Key Not Pressed \\
+            (0xE,0xA,_,1) => {
+                let x: usize = digit3 as usize;
+                let vx = self.v_reg[x];
+                if !key{
+                    self.program_counter += 2;
+                }
+            },
+
+            // FX07 - VX = DT \\
+            (0xF,_,0,7) => {
+                let x: usize = digit2 as usize;
+                self.v_reg[x] = self.dt;
+            },
+
+            // FX0A - Wait for a Key Press \\
+            (0xF,_,0,0xA) => {
+                let x: usize = digit2 as usize;
+                let mut key_pressed: bool = false;
+                for i in 0..self.keys.len(){
+                    if self.keys[i]{
+                        self.v_reg[x] = i as u8;
+                        key_pressed = true;
+                        break;
+                    }
+                }
+                if !key_pressed{
+                    self.program_counter -= 2; // re run the operation
+                }
+            },
+
+            // FX15 - DT = VX \\
+            (0xF,_,1,5) => {
+                let x: usize = digit2 as usize;
+                self.dt = self.v_reg[x];
+            },
+
+            // FX18 - ST = VX \\
+            (0xF,_,1,5) => {
+                let x: usize = digit2 as usize;
+                self.st = self.v_reg[x];
+            },
+
+            // FX1E - I += VX \\
+            (0xF,_,1,0xE) => {
+                let x: usize = digit2 as usize;
+                let vx: u16 = self.v_reg[x] as u16;
+                self.i_reg = self.i_reg.wrapping_add(vx);
+            },
+
+            // FX29 - Set I to Font Addr \\
+            (0xF,_,2,9) => {
+                let x: usize = digit2 as usize;
+                let c: u16 = self.v_reg[x] as u16;
+                self.i_reg = c*5;
+            },
+
+            // FX33 - I = BCD of VX
+            (0xF,_,3,3) => {
+                let x: usize = digit2 as usize;
+                let vx: u16 = self.v_reg[x] as u16; 
+                // BCD - Binary Coded Decimal
+                let hundreds: u8 = (vx/100.0).floor() as u8;
+                let tens: u8 = ((vx/10.0)%10.0).floor() as u8;
+                let ones: u8 = (vx%10) as u8;
+
+                self.ram[self.i_reg as usize] = hundreds;
+                self.ram[(self.i_reg + 1) as usize] = tens;
+                self.ram[(self.i_reg + 2) as usize] = ones;
+            },
+
+            // FX55 - Store V0 - VX into I \\
+            (0xF,_,5,5) => {
+                let x: usize = digit2 as usize;
+                let i: usize = self.i_reg as usize;
+                for idx in 0..x{
+                    self.ram[i+idx] = self.v_reg[idx];
+                }
+            },
+            
+            // FX65 - Load I into V0-VX
+            (0xF,_,6,5) => {
+                let x: usize = digit2 as usize;
+                let i: usize = self.i_reg as usize;
+                for idx in 0..x{
+                    self.v_reg[idx] = self.ram[i+idx];
+                }
             },
 
             (_,_,_,_) => unimplemented!("Error: Unimplimented opcode: {}", op),
