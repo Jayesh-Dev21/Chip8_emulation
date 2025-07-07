@@ -215,7 +215,7 @@ impl EMU{
                 self.v_reg[x] ^= self.v_reg[y]
             },
 
-            (_,_,_,_) => unimplemented!("Unimplimented opcode: {}", op),
+            (_,_,_,_) => unimplemented!("Error: Unimplimented opcode: {}", op),
         }
 
     }
