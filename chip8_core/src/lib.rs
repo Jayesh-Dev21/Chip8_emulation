@@ -114,7 +114,7 @@ impl EMU{
         self.stack[self.sp as usize] // scope for underflow panic, try later
     }
 
-    pub fn get_dislay(&self) -> &[bool]{
+    pub fn get_display(&self) -> &[bool]{
         return &self.screen;
     }
 
@@ -135,11 +135,40 @@ impl EMU{
         self.execute(op);
     }
 
+        fn fetch(&mut self) -> u16{
+        let higher_byte: u16 = self.ram[self.program_counter as usize] as u16;
+        let lower_byte: u16 = self.ram[(self.program_counter + 1) as usize] as u16;
+        let op: u16 = (higher_byte << 8) | lower_byte;
+        self.program_counter += 2;
+        op
+        /* Example
+        higher_byte = 0xA2 as u16 = 0x00A2
+        lower_byte  = 0xF0 as u16 = 0x00F0
+        op          = (0xA2 << 8) | 0xF0
+                    = 0xA200 | 0x00F0
+                    = 0xA2F0
+
+        */
+    }
+
+    pub fn tick_timers(&mut self){
+        if self.dt > 0 {
+            self.dt -= 1;
+        }
+
+        if self.st > 0 {
+            if 1 == self.st { // yoda style
+                // Bada Bing Bada Boom
+            }
+            self.st -= 1;
+        }
+    }
+    
     fn execute(&mut self, op: u16){
         let digit1: u16 = (op & 0xF000) >> 12;
-        let digit2: u16 = (op & 0xF000) >> 8;
-        let digit3: u16 = (op & 0xF000) >> 4;
-        let digit4: u16 = op & 0xF000;
+        let digit2: u16 = (op & 0x0F00) >> 8;
+        let digit3: u16 = (op & 0x00F0) >> 4;
+        let digit4: u16 = op & 0x000F;
 
         match(digit1,digit2,digit3,digit4){
 
@@ -290,9 +319,9 @@ impl EMU{
             // 8XYE - VX <<= 1 \\
             (8,_,_,0xE) => {
                 let x: usize = digit2 as usize;
-                let msb: u8 = self.v_reg[x] & 1; // most sig bit
-
-                self.v_reg[x] <<= 1;
+                // most sig bit
+                let msb: u8 = (self.v_reg[x] >> 7) & 1;
+                self.v_reg[x] = self.v_reg[x] << 1;
                 self.v_reg[0xF] = msb;
             },
 
@@ -372,7 +401,7 @@ impl EMU{
             },
 
             // EXA1 - Skip if Key Not Pressed \\
-            (0xE,0xA,_,1) => {
+            (0xE,_,0xA,1) => {
                 let x: usize = digit3 as usize;
                 let vx = self.v_reg[x];
                 let key: bool = self.keys[vx as usize];
@@ -461,43 +490,9 @@ impl EMU{
                 }
             },
 
+            // Finally \\
+
             (_,_,_,_) => unimplemented!("Error: Unimplimented opcode: {}", op),
-        }
-
-    }
-
-    fn fetch(&mut self) -> u16{
-        let higher_byte: u16 = self.ram[self.program_counter as usize] as u16;
-        let lower_byte: u16 = self.ram[(self.program_counter + 1) as usize] as u16;
-        let op: u16 = (higher_byte << 8) | lower_byte;
-        self.program_counter += 2;
-        op
-        /* Example
-        higher_byte = 0xA2 as u16 = 0x00A2
-        lower_byte  = 0xF0 as u16 = 0x00F0
-        op          = (0xA2 << 8) | 0xF0
-                    = 0xA200 | 0x00F0
-                    = 0xA2F0
-
-        */
-    }
-
-    pub fn tick_timers(&mut self){
-        if self.dt > 0 {
-            self.dt -= 1;
-        }
-
-        if self.st > 0 {
-            if 1 == self.st { // yoda style
-                // Bada Bing Bada Boom
-            }
-            self.st -= 1;
         }
     }
 }
-
-
-
-
-
-
