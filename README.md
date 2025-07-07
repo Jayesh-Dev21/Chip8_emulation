@@ -6,6 +6,9 @@
 A CHIP-8 emulator written in Rust.  
 **The Hello World of Emulation!**
 
+[showcase.webm](https://github.com/user-attachments/assets/9ac8e2f4-c963-40d1-9ca8-b1c11ec0f3c7)
+
+
 ---
 
 ## Table of Contents
