@@ -125,7 +125,7 @@ impl EMU{
         let digit1: u16 = (op & 0xF000) >> 12;
         let digit2: u16 = (op & 0xF000) >> 8;
         let digit3: u16 = (op & 0xF000) >> 4;
-        let digit4: u16 = (op & 0xF000);
+        let digit4: u16 = op & 0xF000;
 
         match(digit1,digit2,digit3,digit4){
 
@@ -361,6 +361,7 @@ impl EMU{
             (0xE,0xA,_,1) => {
                 let x: usize = digit3 as usize;
                 let vx = self.v_reg[x];
+                let key: bool = self.keys[vx as usize];
                 if !key{
                     self.program_counter += 2;
                 }
@@ -395,7 +396,7 @@ impl EMU{
             },
 
             // FX18 - ST = VX \\
-            (0xF,_,1,5) => {
+            (0xF,_,1,8) => {
                 let x: usize = digit2 as usize;
                 self.st = self.v_reg[x];
             },
@@ -419,8 +420,8 @@ impl EMU{
                 let x: usize = digit2 as usize;
                 let vx: u16 = self.v_reg[x] as u16; 
                 // BCD - Binary Coded Decimal
-                let hundreds: u8 = (vx/100.0).floor() as u8;
-                let tens: u8 = ((vx/10.0)%10.0).floor() as u8;
+                let hundreds: u8 = (vx/100) as u8;
+                let tens: u8 = ((vx/10)%10) as u8;
                 let ones: u8 = (vx%10) as u8;
 
                 self.ram[self.i_reg as usize] = hundreds;
