@@ -38,6 +38,17 @@ const FONTSET: [u8; FONTSET_SIZE] = [
     0xF0, 0x80, 0xF0, 0x80, 0xF0, // for E
     0xF0, 0x80, 0xF0, 0x80, 0x80  // for F
 ];
+
+/*
+    ref - http://devernay.free.fr/hacks/chip8/C8TECH10.HTM#keyboard
+    for example 1 is represented as: 
+
+    * *  * []  * * * * - 0x20
+    * * [] []  * * * * - 0x60
+    * *  * []  * * * * - 0x20
+    * *  * []  * * * * - 0x20
+    * * [] [] [] * * * - 0x70
+*/
 // Main object, for emulation class
 pub struct EMU{
     program_counter: u16, // program counter
@@ -243,7 +254,7 @@ impl EMU{
 
         if self.st > 0 {
             if 1 == self.st { // yoda style
-                // Audio work here
+                // Bada Bing Bada Boom
             }
             self.st -= 1;
         }
