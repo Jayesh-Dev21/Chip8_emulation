@@ -442,6 +442,7 @@ impl EMU{
             (0xF,_,1,8) => {
                 let x: usize = digit2 as usize;
                 self.st = self.v_reg[x];
+                println!("Sound timer set to: {}", self.st); // Add this debug line
             },
 
             // FX1E - I += VX \\
@@ -494,5 +495,9 @@ impl EMU{
 
             (_,_,_,_) => unimplemented!("Error: Unimplimented opcode: {}", op),
         }
+    }
+
+    pub fn get_sound_timer(&self) -> u8 {
+        self.st
     }
 }
