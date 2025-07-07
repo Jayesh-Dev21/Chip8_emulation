@@ -127,6 +127,93 @@ impl EMU{
             },
 
             // 00EE - Return from Subroutine
+            (0,0,0xE,0xE) => {
+                let ret_addr: u16 = self.pop();
+
+                self.program_counter = ret_addr;
+            },
+
+            // 1NNN - Jump
+            (1,_,_,_) => {
+                let nnn: u16 = op & 0xFFF;
+                self.program_counter = nnn;
+            },
+
+            // 2NNNN - Call Subroutine
+            (2,_,_,_) => {
+                let nnn: u16 = op & 0xFFF;
+                self.push(self.program_counter);
+                self.program_counter = nnn;
+            },
+
+            // 3XNN - Skip next if VX == NN
+            (3,_,_,_) => {
+                let x: usize = digit2 as usize;
+                let nn: u8 = (op & 0xFF) as u8;
+                if self.v_reg[x] == nn{
+                    self.program_counter += 2;
+                }
+            },
+
+            // 4XNN - Skip next if VX == NN
+            (4,_,_,_) => {
+                let x: usize = digit2 as usize;
+                let nn: u8 = (op & 0xFF) as u8;
+                if self.v_reg[x] != nn{
+                    self.program_counter += 2;
+                }
+            },
+
+            // 5XY0 - Skip next if VX == VY
+            (5,_,_,0) => {
+                let x: usize = digit2 as usize;
+                let y: usize = digit2 as usize;
+                if self.v_reg[x] == self.v_reg[y]{
+                    self.program_counter += 2;
+                }
+            },
+
+            // 6XNN - VX = NN
+            (6,_,_,_) => {
+                let x: usize = digit2 as usize;
+                let nn: u8 = (op & 0xFF) as u8;
+                self.v_reg[x] = nn;
+            },
+
+            // 7XNN - VX += NN
+            (7,_,_,_) => {
+                let x: usize = digit2 as usize;
+                let nn: u8 = (op & 0xFF) as u8;
+                self.v_reg[x] = self.v_reg[x].wrapping_add(nn);
+            },
+
+            // 8XY0 - Skip next if VX == VY \\
+            (8,_,_,0) => {
+                let x: usize = digit2 as usize;
+                let y: usize = digit3 as usize;
+                self.v_reg[x] = self.v_reg[y]
+            },
+            // BITWISE \\
+            // 8XY1 - Bitwise OR VX |= VY \\
+            (8,_,_,1) => {
+                let x: usize = digit2 as usize;
+                let y: usize = digit3 as usize;
+                self.v_reg[x] |= self.v_reg[y]
+            },
+
+            // 8XY2 - Bitwise AND VX &= VY \\
+            (8,_,_,2) => {
+                let x: usize = digit2 as usize;
+                let y: usize = digit3 as usize;
+                self.v_reg[x] &= self.v_reg[y]
+            },
+
+            // 8XY3 - Bitwise XOR VX ^= VY \\
+            (8,_,_,3) => {
+                let x: usize = digit2 as usize;
+                let y: usize = digit3 as usize;
+                self.v_reg[x] ^= self.v_reg[y]
+            },
 
             (_,_,_,_) => unimplemented!("Unimplimented opcode: {}", op),
         }
