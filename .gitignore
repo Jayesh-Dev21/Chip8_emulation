@@ -1,3 +1,10 @@
 .vscode/
 .env
 .venv
+
+cpp/main
+cpp/emulator
+cpp/desktop
+cpp/cpu
+cpp/*.o
+cpp/*.out
