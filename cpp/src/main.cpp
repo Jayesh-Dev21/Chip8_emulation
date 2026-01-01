@@ -14,6 +14,5 @@ int main(int argc, char* argv[]){
         }
     }
 
-    // std::cout << "Hello, World!" << std::endl; -- Test 1
     return 0;
 }
