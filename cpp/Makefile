@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -Wall
+CFLAGS = -std=c++14 -Wall -g
 
 TARGET = emulator
 SRC = $(wildcard src/*.cpp)
