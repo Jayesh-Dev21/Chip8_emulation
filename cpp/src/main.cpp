@@ -7,7 +7,7 @@ void call_func(const char* rom){
 int main(int argc, char* argv[]){
     
     if (1 == argc){
-        std::cout << "Please enter the name of the rom file" << std::endl;
+        std::cout << "Please enter the path/to/the/rom" << std::endl;
     } 
 
     else { // ignore all argv[:2]
