@@ -1,12 +1,12 @@
 CC = g++
-CFLAGS = -std=c++14 -Wall -g
+CFLAGS = -std=c++17 -Wall -g
 
-TARGET = emulator
+TARGET = emu
 SRC = $(wildcard src/*.cpp)
 HEADERS = $(wildcard src/headers/*.h)
 # searches for all *.c files in the directory
 
-OBJ = $(SRC:.c=.o)
+OBJ = $(SRC:.cpp=.o)
 
 $(TARGET): $(OBJ) 
 	$(CC) $(OBJ) -o $(TARGET)

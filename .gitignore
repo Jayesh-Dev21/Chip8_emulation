@@ -4,7 +4,8 @@
 
 cpp/main
 cpp/emulator
+cpp/emu
 cpp/desktop
 cpp/cpu
-cpp/*.o
-cpp/*.out
+cpp/*/*.o
+cpp/*/*.out
