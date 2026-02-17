@@ -54,6 +54,12 @@ impl EmuWasm {
         }
     }
 
+    // Expose sound timer so JavaScript can manage WebAudio playback on the page
+    #[wasm_bindgen]
+    pub fn get_sound_timer(&self) -> u8 {
+        self.chip8.get_sound_timer()
+    }
+
     #[wasm_bindgen]
     pub fn virtual_keypress(&mut self, key_str: String, pressed: bool) {
         if let Some(k) = key2btn(&key_str) {

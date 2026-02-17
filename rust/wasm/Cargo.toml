@@ -18,6 +18,7 @@ features = [
     "HtmlCanvasElement",
     "ImageData",
     "KeyboardEvent",
+    "AudioParam",
     "Window"
 ]
 

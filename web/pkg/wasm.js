@@ -102,11 +102,6 @@ function getDataViewMemory0() {
     return cachedDataViewMemory0;
 }
 
-function getArrayU8FromWasm0(ptr, len) {
-    ptr = ptr >>> 0;
-    return getUint8ArrayMemory0().subarray(ptr / 1, ptr / 1 + len);
-}
-
 function debugString(val) {
     // primitive types
     const type = typeof val;
@@ -195,30 +190,21 @@ export class EmuWasm {
         const ptr = this.__destroy_into_raw();
         wasm.__wbg_emuwasm_free(ptr, 0);
     }
-    constructor() {
-        const ret = wasm.emuwasm_new();
-        if (ret[2]) {
-            throw takeFromExternrefTable0(ret[1]);
-        }
-        this.__wbg_ptr = ret[0] >>> 0;
-        EmuWasmFinalization.register(this, this.__wbg_ptr, this);
-        return this;
-    }
-    reset() {
-        wasm.emuwasm_reset(this.__wbg_ptr);
-    }
-    tick() {
-        wasm.emuwasm_tick(this.__wbg_ptr);
+    /**
+     * @param {number} scale
+     */
+    draw_screen(scale) {
+        wasm.emuwasm_draw_screen(this.__wbg_ptr, scale);
     }
     tick_timers() {
         wasm.emuwasm_tick_timers(this.__wbg_ptr);
     }
     /**
-     * @param {KeyboardEvent} evt
-     * @param {boolean} pressed
+     * @returns {number}
      */
-    keypress(evt, pressed) {
-        wasm.emuwasm_keypress(this.__wbg_ptr, evt, pressed);
+    get_sound_timer() {
+        const ret = wasm.emuwasm_get_sound_timer(this.__wbg_ptr);
+        return ret;
     }
     /**
      * @param {string} key_str
@@ -229,17 +215,33 @@ export class EmuWasm {
         const len0 = WASM_VECTOR_LEN;
         wasm.emuwasm_virtual_keypress(this.__wbg_ptr, ptr0, len0, pressed);
     }
+    constructor() {
+        const ret = wasm.emuwasm_new();
+        if (ret[2]) {
+            throw takeFromExternrefTable0(ret[1]);
+        }
+        this.__wbg_ptr = ret[0] >>> 0;
+        EmuWasmFinalization.register(this, this.__wbg_ptr, this);
+        return this;
+    }
+    tick() {
+        wasm.emuwasm_tick(this.__wbg_ptr);
+    }
+    reset() {
+        wasm.emuwasm_reset(this.__wbg_ptr);
+    }
+    /**
+     * @param {KeyboardEvent} evt
+     * @param {boolean} pressed
+     */
+    keypress(evt, pressed) {
+        wasm.emuwasm_keypress(this.__wbg_ptr, evt, pressed);
+    }
     /**
      * @param {Uint8Array} data
      */
     load_game(data) {
         wasm.emuwasm_load_game(this.__wbg_ptr, data);
-    }
-    /**
-     * @param {number} scale
-     */
-    draw_screen(scale) {
-        wasm.emuwasm_draw_screen(this.__wbg_ptr, scale);
     }
 }
 
@@ -285,10 +287,6 @@ function __wbg_get_imports() {
         const ret = arg0.call(arg1);
         return ret;
     }, arguments) };
-    imports.wbg.__wbg_crypto_038798f665f985e2 = function(arg0) {
-        const ret = arg0.crypto;
-        return ret;
-    };
     imports.wbg.__wbg_document_d249400bd7bd996d = function(arg0) {
         const ret = arg0.document;
         return isLikeNone(ret) ? 0 : addToExternrefTable0(ret);
@@ -303,13 +301,6 @@ function __wbg_get_imports() {
     imports.wbg.__wbg_getElementById_f827f0d6648718a8 = function(arg0, arg1, arg2) {
         const ret = arg0.getElementById(getStringFromWasm0(arg1, arg2));
         return isLikeNone(ret) ? 0 : addToExternrefTable0(ret);
-    };
-    imports.wbg.__wbg_getRandomValues_371e7ade8bd92088 = function(arg0, arg1) {
-        arg0.getRandomValues(arg1);
-    };
-    imports.wbg.__wbg_getRandomValues_7dfe5bd1b67c9ca1 = function(arg0) {
-        const ret = arg0.getRandomValues;
-        return ret;
     };
     imports.wbg.__wbg_instanceof_CanvasRenderingContext2d_df82a4d3437bf1cc = function(arg0) {
         let result;
@@ -352,10 +343,6 @@ function __wbg_get_imports() {
         const ret = arg0.length;
         return ret;
     };
-    imports.wbg.__wbg_msCrypto_ff35fce085fab2a3 = function(arg0) {
-        const ret = arg0.msCrypto;
-        return ret;
-    };
     imports.wbg.__wbg_new_a12002a7f91c75be = function(arg0) {
         const ret = new Uint8Array(arg0);
         return ret;
@@ -364,21 +351,6 @@ function __wbg_get_imports() {
         const ret = new Function(getStringFromWasm0(arg0, arg1));
         return ret;
     };
-    imports.wbg.__wbg_newwithlength_a381634e90c276d4 = function(arg0) {
-        const ret = new Uint8Array(arg0 >>> 0);
-        return ret;
-    };
-    imports.wbg.__wbg_randomFillSync_994ac6d9ade7a695 = function(arg0, arg1, arg2) {
-        arg0.randomFillSync(getArrayU8FromWasm0(arg1, arg2));
-    };
-    imports.wbg.__wbg_require_0d6aeaec3c042c88 = function(arg0, arg1, arg2) {
-        const ret = arg0.require(getStringFromWasm0(arg1, arg2));
-        return ret;
-    };
-    imports.wbg.__wbg_self_25aabeb5a7b41685 = function() { return handleError(function () {
-        const ret = self.self;
-        return ret;
-    }, arguments) };
     imports.wbg.__wbg_set_65595bdd868b3009 = function(arg0, arg1, arg2) {
         arg0.set(arg1, arg2 >>> 0);
     };
@@ -390,10 +362,6 @@ function __wbg_get_imports() {
         const ret = typeof globalThis === 'undefined' ? null : globalThis;
         return isLikeNone(ret) ? 0 : addToExternrefTable0(ret);
     };
-    imports.wbg.__wbg_static_accessor_MODULE_ef3aa2eb251158a5 = function() {
-        const ret = module;
-        return ret;
-    };
     imports.wbg.__wbg_static_accessor_SELF_37c5d418e4bf5819 = function() {
         const ret = typeof self === 'undefined' ? null : self;
         return isLikeNone(ret) ? 0 : addToExternrefTable0(ret);
@@ -401,10 +369,6 @@ function __wbg_get_imports() {
     imports.wbg.__wbg_static_accessor_WINDOW_5de37043a91a9c40 = function() {
         const ret = typeof window === 'undefined' ? null : window;
         return isLikeNone(ret) ? 0 : addToExternrefTable0(ret);
-    };
-    imports.wbg.__wbg_subarray_aa9065fa9dc5df96 = function(arg0, arg1, arg2) {
-        const ret = arg0.subarray(arg1 >>> 0, arg2 >>> 0);
-        return ret;
     };
     imports.wbg.__wbindgen_debug_string = function(arg0, arg1) {
         const ret = debugString(arg1);

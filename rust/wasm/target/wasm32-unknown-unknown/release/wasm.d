@@ -1,0 +1,1 @@
+/home/wizard/code/CSOC/Chip8_emulation/rust/wasm/target/wasm32-unknown-unknown/release/wasm.wasm: /home/wizard/code/CSOC/Chip8_emulation/rust/chip8_core/src/lib.rs /home/wizard/code/CSOC/Chip8_emulation/rust/wasm/src/lib.rs

@@ -1,4 +1,25 @@
+#[cfg(feature = "rnd")]
 use rand::random;
+
+// Provide a simple deterministic PRNG for wasm builds (when `rand` is disabled).
+// This avoids pulling `getrandom` into wasm builds while still returning a
+// varying byte for instructions that rely on randomness (CXNN).
+#[cfg(not(feature = "rnd"))]
+fn random() -> u8 {
+    use core::sync::atomic::{AtomicU32, Ordering};
+
+    static SEED: AtomicU32 = AtomicU32::new(0x1234_5678);
+
+    // simple LCG: x = x * 1664525 + 1013904223
+    let mut s = SEED.load(Ordering::Relaxed);
+    loop {
+        let new = s.wrapping_mul(1664525).wrapping_add(1013904223);
+        match SEED.compare_exchange_weak(s, new, Ordering::SeqCst, Ordering::SeqCst) {
+            Ok(_) => return ((new >> 16) & 0xFF) as u8,
+            Err(curr) => s = curr,
+        }
+    }
+}
 
 // constants
 const RAM_SIZE: usize = 4096;

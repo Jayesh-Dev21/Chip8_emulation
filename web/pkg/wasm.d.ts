@@ -2,14 +2,15 @@
 /* eslint-disable */
 export class EmuWasm {
   free(): void;
-  constructor();
-  reset(): void;
-  tick(): void;
-  tick_timers(): void;
-  keypress(evt: KeyboardEvent, pressed: boolean): void;
-  virtual_keypress(key_str: string, pressed: boolean): void;
-  load_game(data: Uint8Array): void;
   draw_screen(scale: number): void;
+  tick_timers(): void;
+  get_sound_timer(): number;
+  virtual_keypress(key_str: string, pressed: boolean): void;
+  constructor();
+  tick(): void;
+  reset(): void;
+  keypress(evt: KeyboardEvent, pressed: boolean): void;
+  load_game(data: Uint8Array): void;
 }
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
@@ -17,14 +18,15 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
   readonly __wbg_emuwasm_free: (a: number, b: number) => void;
+  readonly emuwasm_draw_screen: (a: number, b: number) => void;
+  readonly emuwasm_get_sound_timer: (a: number) => number;
+  readonly emuwasm_keypress: (a: number, b: any, c: number) => void;
+  readonly emuwasm_load_game: (a: number, b: any) => void;
   readonly emuwasm_new: () => [number, number, number];
   readonly emuwasm_reset: (a: number) => void;
   readonly emuwasm_tick: (a: number) => void;
   readonly emuwasm_tick_timers: (a: number) => void;
-  readonly emuwasm_keypress: (a: number, b: any, c: number) => void;
   readonly emuwasm_virtual_keypress: (a: number, b: number, c: number, d: number) => void;
-  readonly emuwasm_load_game: (a: number, b: any) => void;
-  readonly emuwasm_draw_screen: (a: number, b: number) => void;
   readonly __wbindgen_exn_store: (a: number) => void;
   readonly __externref_table_alloc: () => number;
   readonly __wbindgen_export_2: WebAssembly.Table;
