@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/c8games/(.*)", "destination": "/c8games/$1" }
+  ]
+}

@@ -5,7 +5,7 @@ const RAM_SIZE: usize = 4096;
 
 // display
 pub const SCREEN_WIDTH: usize = 64;
-pub const SCREEN_HEIGHT: usize = 64;
+pub const SCREEN_HEIGHT: usize = 32;
 
 // 16 registers for chip 8
 const NUM_REGS: usize = 16;
@@ -64,6 +64,11 @@ pub struct EMU{
     st: u8, //sound timer
     dt: u8, //delay timer
 }
+
+// Provide a stable, public alias expected by other crates (wasm glue
+// previously referenced `CHIP8`). Keep `EMU` as the canonical name,
+// but expose `CHIP8` for compatibility.
+pub type CHIP8 = EMU;
 
 
 impl EMU{

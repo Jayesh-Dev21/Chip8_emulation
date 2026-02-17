@@ -5,4 +5,10 @@ edition = "2024"
 
 [dependencies]
 rand = "0.9.0"
-rodio = "0.20.1"
+rodio = { version = "0.20.1", optional = true }
+
+[features]
+# `audio` enables audio support (via rodio). Default kept for desktop builds,
+# but can be disabled for wasm builds which cannot use rodio.
+default = ["audio"]
+audio = ["rodio"]

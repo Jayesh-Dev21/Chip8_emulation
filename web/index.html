@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Chip-8 Emulator</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <h1>My Chip-8 Emulator written in Rust 🦀</h1>
+        <p><b>Development Process:</b> Core module in Rust, desktop with SDL2, web with WebAssembly.</p>
+        <p><b>Specs:</b> 4KB RAM, 16 8-bit registers, 16-bit I register, 2 8-bit timers, 16-bit PC, 8-bit SP, 16-value stack.</p>
+        <div class="links-container">
+            <a href="https://github.com/Jayesh-Dev21/Chip8_emulation" target="_blank" class="source-code-link red-link">View Source Code on GitHub</a>
+            <a href="https://github.com/Jayesh-Dev21" target="_blank" class="source-code-link green-link">My GitHub Profile</a>
+            <a href="https://www.linkedin.com/in/jayeshpuri/" target="_blank" class="source-code-link blue-link">My LinkedIn Profile</a>
+        </div>
+        <label for="fileinput">Upload a Chip-8 game: </label>
+        <input type="file" id="fileinput" autocomplete="off"/>
+        <div class="rom-selector">
+            <label for="rom-select">Or select a pre-loaded ROM:</label>
+            <select id="rom-select">
+                <option value="">--Please choose an option--</option>
+                <option value="15PUZZLE">15PUZZLE</option>
+                <option value="BLINKY">BLINKY</option>
+                <option value="BLITZ">BLITZ</option>
+                <option value="BRIX">BRIX</option>
+                <option value="CONNECT4">CONNECT4</option>
+                <option value="GUESS">GUESS</option>
+                <option value="HIDDEN">HIDDEN</option>
+                <option value="INVADERS">INVADERS</option>
+                <option value="KALEID">KALEID</option>
+                <option value="MAZE">MAZE</option>
+                <option value="MERLIN">MERLIN</option>
+                <option value="MISSILE">MISSILE</option>
+                <option value="PONG">PONG</option>
+                <option value="PONG2">PONG2</option>
+                <option value="PUZZLE">PUZZLE</option>
+                <option value="SYZYGY">SYZYGY</option>
+                <option value="TANK">TANK</option>
+                <option value="TETRIS">TETRIS</option>
+                <option value="TICTAC">TICTAC</option>
+                <option value="UFO">UFO</option>
+                <option value="VBRIX">VBRIX</option>
+                <option value="VERS">VERS</option>
+                <option value="WIPEOFF">WIPEOFF</option>
+            </select>
+        </div>
+        <div class="speed-selector">
+            <label for="speed-select">Playback Speed:</label>
+            <select id="speed-select">
+                <option value="1.0">1x (Normal)</option>
+                <option value="0.5">0.5x</option>
+                <option value="0.75">0.75x</option>
+                <option value="1.25">1.25x</option>
+                <option value="1.5">1.5x</option>
+                <option value="1.75">1.75x</option>
+                <option value="2.0">2x</option>
+            </select>
+        </div>
+        <br/>
+        <canvas id="canvas">If you see this message, then your browser doesn't support HTML5</canvas>
+        <div class="keypad">
+            <button data-key="1">1</button>
+            <button data-key="2">2</button>
+            <button data-key="3">3</button>
+            <button data-key="4">C</button>
+            <button data-key="q">4</button>
+            <button data-key="w">5</button>
+            <button data-key="e">6</button>
+            <button data-key="r">D</button>
+            <button data-key="a">7</button>
+            <button data-key="s">8</button>
+            <button data-key="d">9</button>
+            <button data-key="f">E</button>
+            <button data-key="z">A</button>
+            <button data-key="x">0</button>
+            <button data-key="c">B</button>
+            <button data-key="v">F</button>
+        </div>
+        <div class="key-mappings">
+            <h2>Key Mappings</h2>
+            <pre>
+                CHIP-8 Keypad:    Emulator Keypad:
+
+                1 2 3 C           1 2 3 4
+                4 5 6 D    =>     Q W E R
+                7 8 9 E           A S D F
+                A 0 B F           Z X C V
+            </pre>
+        </div>
+    </body>
+    <script type="module" src="index.js"></script>
+</html>
