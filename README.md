@@ -7,7 +7,7 @@
 A CHIP-8 emulator written in Rust with WebAssembly support.  
 **The Hello World of Emulation!**
 
-[showcase.webm](https://github.com/user-attachments/assets/9ac8e2f4-c963-40d1-9ca8-b1c11ec0f3c7)
+<img width="1149" height="870" alt="ss" src="https://github.com/user-attachments/assets/9c4fb95e-ab8a-49cb-b548-3997c3fb8953" />
 
 ---
 
@@ -76,6 +76,9 @@ CHIP-8 Keypad:    Your Keyboard:
 7 8 9 E           A S D F
 A 0 B F           Z X C V
 ```
+
+
+[showcase.webm](https://github.com/user-attachments/assets/9ac8e2f4-c963-40d1-9ca8-b1c11ec0f3c7)
 
 ---
 
