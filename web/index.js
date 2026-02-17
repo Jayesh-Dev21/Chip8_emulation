@@ -29,6 +29,7 @@ const ctx = canvas.getContext("2d")
 
 let audioCtx = null
 let osc = null
+let gainNode = null
 
 function startBeep() {
 
@@ -37,9 +38,13 @@ function startBeep() {
   audioCtx ??= new AudioContext()
 
   osc = audioCtx.createOscillator()
+  gainNode = audioCtx.createGain()
+  
   osc.type = "square"
+  gainNode.gain.value = 0.02  // Much quieter - 2% volume
 
-  osc.connect(audioCtx.destination)
+  osc.connect(gainNode)
+  gainNode.connect(audioCtx.destination)
   osc.start()
 }
 
@@ -49,8 +54,10 @@ function stopBeep() {
 
   osc.stop()
   osc.disconnect()
+  gainNode?.disconnect()
 
   osc = null
+  gainNode = null
 }
 
 
@@ -78,16 +85,25 @@ function setupKeyboard() {
 
   document.addEventListener("keydown", e => {
 
-    chip8.virtual_keypress(
-      e.key.toLowerCase(),
-      true
-    )
+    if (!chip8) return
+
+    const key = e.key.toLowerCase()
+    
+    // Prevent default for game keys to avoid page scroll/navigation
+    const gameKeys = ['1','2','3','4','q','w','e','r','a','s','d','f','z','x','c','v']
+    if (gameKeys.includes(key)) {
+      e.preventDefault()
+    }
+
+    chip8.virtual_keypress(key, true)
 
     audioCtx?.resume()
   })
 
 
   document.addEventListener("keyup", e => {
+
+    if (!chip8) return
 
     chip8.virtual_keypress(
       e.key.toLowerCase(),
