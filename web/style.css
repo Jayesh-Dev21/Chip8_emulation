@@ -1,10 +1,20 @@
-/* General Styles */
-body {
-    font-family: 'Press Start 2P', monospace; /* Retro pixel font */
-    background-color: #1a1a1a; /* Dark background */
-    color: #00ff00; /* Retro green text */
+/* Modern dark theme */
+:root{
+    --bg: #0b1220; /* deep navy */
+    --panel: #0f2130;
+    --muted: #9fb0c8;
+    --text: #e6eef8;
+    --accent: #00c2a8; /* teal */
+    --accent-2: #ff7a59; /* coral */
+}
+
+/* Base */
+body{
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
     margin: 0;
-    padding: 10px; /* Reduced padding for mobile */
+    padding: 18px;
+    background: linear-gradient(180deg, var(--bg), #07101a 140%);
+    color: var(--text);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -12,255 +22,90 @@ body {
     box-sizing: border-box;
 }
 
-/* Fallback for 'Press Start 2P' if not loaded */
-body {
-    font-family: monospace;
+h1{
+    margin: 8px 0 12px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: 0.6px;
+    font-size: 1.4rem;
 }
 
-h1 {
-    color: #00ff00;
+p{
+    margin: 6px 0 12px;
+    color: var(--muted);
+    max-width: 900px;
     text-align: center;
-    text-shadow: 0 0 5px #00ff00;
-    margin-bottom: 15px; /* Adjusted margin */
-    font-size: 1.2em; /* Smaller font for mobile */
+    font-size: 0.95rem;
 }
 
-p {
-    text-align: center;
-    margin-bottom: 8px; /* Adjusted margin */
-    font-size: 0.7em; /* Smaller font for mobile */
-}
-
-.links-container {
+.links-container{
     display: flex;
+    gap: 10px;
+    margin-bottom: 14px;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 8px; /* Adjusted gap */
-    margin-bottom: 15px; /* Adjusted margin */
 }
 
-.source-code-link {
+.source-code-link{
     display: inline-block;
-    padding: 6px 10px; /* Adjusted padding */
-    border: 2px solid #00ff00;
-    background-color: #333;
-    color: #00ff00;
+    padding: 8px 12px;
+    background: var(--panel);
+    color: var(--text);
+    border: 1px solid rgba(255,255,255,0.04);
     text-decoration: none;
-    font-weight: bold;
-    font-size: 0.6em; /* Smaller font for mobile */
-    text-transform: uppercase;
-    box-shadow: 0 0 5px #00ff00;
-    transition: background-color 0.2s, color 0.2s, box-shadow 0.2s;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.88rem;
+    transition: transform .12s ease, box-shadow .12s ease;
 }
 
-.source-code-link:hover {
-    background-color: #00ff00;
-    color: #1a1a1a;
-    box-shadow: 0 0 10px #00ff00;
+.source-code-link:hover{box-shadow: 0 6px 18px rgba(2,12,23,0.6); transform: translateY(-3px);}
+
+label{ color:var(--muted); font-weight:600; }
+
+input[type="file"], select{
+    background: var(--panel);
+    color: var(--text);
+    border: 1px solid rgba(255,255,255,0.04);
+    padding: 8px 10px;
+    border-radius: 6px;
 }
 
-/* Form Elements */
-label {
-    margin-right: 8px; /* Adjusted margin */
-    font-size: 0.7em; /* Smaller font for mobile */
+.rom-selector, .speed-selector{ margin: 8px 0; }
+
+canvas{
+    display:block;
+    margin: 16px auto;
+    border-radius: 10px;
+    background: #000;
+    image-rendering: pixelated;
+    width: min(640px, 96%);
+    box-shadow: 0 10px 40px rgba(2,12,23,0.6), inset 0 0 18px rgba(0,0,0,0.6);
+    border: 4px solid rgba(0,0,0,0.4);
 }
 
-input[type="file"],
-select {
-    background-color: #333;
-    color: #00ff00;
-    border: 1px solid #00ff00;
-    padding: 4px; /* Adjusted padding */
-    border-radius: 0;
-    font-family: 'Press Start 2P', monospace;
-    font-size: 0.6em; /* Smaller font for mobile */
-    margin-top: 4px; /* Adjusted margin */
+.keypad{
+    display: grid; grid-template-columns: repeat(4,1fr);
+    gap: 10px; width: min(480px,96%); margin: 18px auto; padding: 12px; box-sizing:border-box;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius: 10px;
 }
 
-.rom-selector {
-    margin-top: 10px; /* Adjusted margin */
-    text-align: center;
+.keypad button{
+    background: linear-gradient(180deg, var(--panel), #0c2631);
+    color: var(--text);
+    border: none; padding: 14px; font-size: 1rem; border-radius: 8px; cursor:pointer; font-weight:700;
+    box-shadow: 0 6px 18px rgba(2,12,23,0.5);
 }
 
-.speed-selector {
-    margin-top: 10px; /* Adjusted margin */
-    text-align: center;
-}
+.keypad button:active{ transform: translateY(2px); }
 
-/* Canvas */
-canvas {
-    display: block;
-    margin: 15px auto; /* Adjusted margin */
-    border: 2px solid #00ff00;
-    box-shadow: 0 0 10px #00ff00;
-    background-color: #000;
-    image-rendering: pixelated; /* For crisp pixel scaling */
-    width: 95%; /* Use more width on mobile */
-    max-width: 480px; /* Max width for canvas */
-    height: auto;
-}
+.key-mappings{ max-width:700px; width:96%; background:var(--panel); padding:12px; border-radius:8px; color:var(--muted); margin:12px auto;}
+.key-mappings h2{ color:var(--text); margin-top:0; }
+.key-mappings pre{ background: rgba(0,0,0,0.35); padding:10px; border-radius:6px; color:var(--text); overflow:auto; }
 
-/* Keypad */
-.keypad {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 6px; /* Adjusted gap */
-    width: 95%; /* Use more width on mobile */
-    max-width: 320px; /* Max width for keypad */
-    margin: 15px auto; /* Adjusted margin */
-    padding: 10px; /* Adjusted padding */
-    background-color: #222;
-    border: 2px solid #00ff00;
-    box-shadow: 0 0 8px #00ff00;
-    box-sizing: border-box;
-}
-
-.keypad button {
-    background-color: #444;
-    color: #00ff00;
-    border: 1px solid #00ff00;
-    padding: 12px 5px; /* Adjusted padding for better tap target */
-    font-size: 0.9em; /* Adjusted font size */
-    border-radius: 0;
-    cursor: pointer;
-    transition: background-color 0.1s, box-shadow 0.1s;
-    font-family: 'Press Start 2P', monospace;
-    text-align: center;
-    line-height: 1;
-}
-
-.keypad button:hover {
-    background-color: #00ff00;
-    color: #1a1a1a;
-    box-shadow: 0 0 5px #00ff00;
-}
-
-.keypad button:active {
-    background-color: #00cc00;
-    box-shadow: 0 0 10px #00cc00;
-    transform: translateY(1px);
-}
-
-/* Key Mappings */
-.key-mappings {
-    background-color: #222;
-    padding: 10px; /* Adjusted padding */
-    border: 2px solid #00ff00;
-    box-shadow: 0 0 8px #00ff00;
-    margin: 15px auto; /* Adjusted margin */
-    max-width: 600px;
-    text-align: center;
-    box-sizing: border-box;
-    width: 95%; /* Use more width on mobile */
-}
-
-.key-mappings h2 {
-    color: #00ff00;
-    margin-top: 0;
-    font-size: 0.9em; /* Adjusted font size */
-    text-shadow: 0 0 3px #00ff00;
-}
-
-.key-mappings pre {
-    background-color: #111;
-    border: 1px solid #00ff00;
-    padding: 8px; /* Adjusted padding */
-    border-radius: 0;
-    overflow-x: auto;
-    text-align: left;
-    font-size: 0.7em; /* Adjusted font size */
-    color: #00ff00;
-    white-space: pre-wrap; /* Allow text to wrap */
-    word-wrap: break-word;
-}
-
-/* Responsive Adjustments */
-@media (min-width: 600px) {
-    body {
-        padding: 20px;
-    }
-
-    h1 {
-        font-size: 1.8em; /* Increased for tablets/laptops */
-    }
-
-    p {
-        font-size: 0.9em;
-    }
-
-    .source-code-link {
-        font-size: 0.75em;
-        padding: 8px 12px;
-    }
-
-    label {
-        font-size: 0.9em;
-    }
-
-    input[type="file"],
-    select {
-        font-size: 0.75em;
-        padding: 6px;
-    }
-
-    canvas {
-        max-width: 480px;
-    }
-
-    .keypad {
-        max-width: 360px; /* Slightly larger keypad on tablets */
-        gap: 10px;
-        padding: 15px;
-    }
-
-    .keypad button {
-        font-size: 1.1em;
-        padding: 18px 5px;
-    }
-
-    .key-mappings h2 {
-        font-size: 1.1em; /* Increased for tablets/laptops */
-    }
-
-    .key-mappings pre {
-        font-size: 0.8em; /* Increased for tablets/laptops */
-    }
-}
-
-@media (min-width: 900px) {
-    body {
-        padding: 40px;
-    }
-
-    h1 {
-        font-size: 2.5em;
-    }
-
-    p {
-        font-size: 1em;
-    }
-
-    .source-code-link {
-        font-size: 0.9em;
-    }
-
-    canvas {
-        max-width: 640px; /* Larger canvas on desktops */
-    }
-
-    .keypad {
-        max-width: 480px; /* Larger keypad on desktops */
-    }
-
-    .keypad button {
-        font-size: 1.4em;
-    }
-
-    .key-mappings h2 {
-        font-size: 1.3em; /* Increased for desktops */
-    }
-
-    .key-mappings pre {
-        font-size: 0.9em; /* Increased for desktops */
-    }
+@media(min-width:700px){
+    h1{ font-size:1.9rem }
+    .source-code-link{ font-size:1rem }
+    canvas{ width:640px }
 }
