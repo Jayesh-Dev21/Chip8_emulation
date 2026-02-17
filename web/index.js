@@ -35,26 +35,34 @@ function startBeep() {
 
   if (osc) return
 
-  audioCtx ??= new AudioContext()
+  try {
+    audioCtx ??= new AudioContext()
 
-  osc = audioCtx.createOscillator()
-  gainNode = audioCtx.createGain()
-  
-  osc.type = "square"
-  gainNode.gain.value = 0.02  // Much quieter - 2% volume
+    osc = audioCtx.createOscillator()
+    gainNode = audioCtx.createGain()
+    
+    osc.type = "square"
+    gainNode.gain.value = 0.02  // Much quieter - 2% volume
 
-  osc.connect(gainNode)
-  gainNode.connect(audioCtx.destination)
-  osc.start()
+    osc.connect(gainNode)
+    gainNode.connect(audioCtx.destination)
+    osc.start()
+  } catch (e) {
+    console.warn('Audio start error:', e)
+  }
 }
 
 function stopBeep() {
 
   if (!osc) return
 
-  osc.stop()
-  osc.disconnect()
-  gainNode?.disconnect()
+  try {
+    osc.stop()
+    osc.disconnect()
+    gainNode?.disconnect()
+  } catch (e) {
+    // Oscillator may already be stopped, ignore
+  }
 
   osc = null
   gainNode = null
@@ -210,7 +218,7 @@ function loop() {
   ctx.fillStyle = "black"
   ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-  ctx.fillStyle = "white"
+  ctx.fillStyle = "#00ff00"  // Green pixels for hacky retro feel
 
   chip8.draw_screen(SCALE)
 
